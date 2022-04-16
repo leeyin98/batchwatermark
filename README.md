@@ -1,10 +1,11 @@
 ## 批量添加水印
+**声明**：灵感来源于https://github.com/2Dou/watermarker
 
-**Pre**：导入PIL库，`pip install Pillow`
 
 ### 文字水印
 
 #### 用法说明
+**Pre**：导入PIL库，`pip install Pillow`
 
 ```
 usage: wordMarker.py [-h]
