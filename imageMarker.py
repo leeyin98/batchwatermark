@@ -1,5 +1,6 @@
 import os
 import argparse
+import random
 
 from PIL import Image
 
@@ -33,6 +34,9 @@ def add_image_mark(image_path, mark_path, args):
     # 设置水印位置,若为局部水印，则选择判断位置
     if args.type == 1:
         location = args.location
+        if location == "4":
+            location = str(random.randint(0, 3))
+
         watermark_x, watermark_y = rgba_watermark.size
         if location == "0":
             rgba_image.paste(rgba_watermark, (0, 0), rgba_watermark_mask)  # 左上角
@@ -80,7 +84,6 @@ def add_image_mark(image_path, mark_path, args):
 
     mark_name = os.path.basename(mark_path)
     pre_name = mark_name.split(".")[0]
-    print(mark_path)
     file_name = pre_name + "-" + os.path.basename(image_path)
     if file_name:
         # 若输出路径不存在则新建
@@ -111,7 +114,7 @@ def main():
     parse.add_argument("-r", "--range", default="0,0,100,100", type=str,
                        help="若type为2，则请输入需擦除的矩形范围（左，上，右，下）, 默认为：0,0,100,100")
     parse.add_argument("-l", "--location", default="0", type=str,
-                       help="若为局部水印请输入水印位置（0：左上，1：左下，2：右上，3：右下），若需自定义则填写开始坐标如：0,0, 默认为:0")
+                       help="若为局部水印请输入水印位置（0：左上，1：左下，2：右上，3：右下，4：随机），若需自定义则填写开始坐标如：0,0, 默认为:0")
     parse.add_argument("-opa", "--opacity", default=0.15, type=float,
                        help="请输入水印的不透明度, 默认为0.15")
     parse.add_argument("-qua", "--quality", default=100, type=int,
