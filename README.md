@@ -27,13 +27,13 @@ usage: wordMarker.py [-h]
 
 **原图：**
 
-<img src="https://raw.githubusercontent.com/leeyin98/figurebed/master/typoraImgs/test.jpg" alt="test" style="zoom:33%;max-width:33%" />
+<img src="https://raw.githubusercontent.com/leeyin98/figurebed/master/typoraImgs/test.jpg" alt="test" style="zoom:33%;width:33%" />
 
 **效果图：**
 
 命令：`python wordMarker.py -f ./images/test.jpg -m leeyin98 -opa 0.5`
 
-<img src="https://raw.githubusercontent.com/leeyin98/figurebed/master/typoraImgs/test-16501151465691.jpg" alt="test" style="zoom:33%;max-width:33%" />
+<img src="https://raw.githubusercontent.com/leeyin98/figurebed/master/typoraImgs/test-16501151465691.jpg" alt="test" style="zoom:33%;width:33%" />
 
 ### 图片水印
 
@@ -58,22 +58,22 @@ usage: imageMarker.py [-h]
 
 **原图：**
 
-<img src="https://raw.githubusercontent.com/leeyin98/figurebed/master/typoraImgs/test.jpg" alt="test" style="zoom:33%;max-width:33%" />
+<img src="https://raw.githubusercontent.com/leeyin98/figurebed/master/typoraImgs/test.jpg" alt="test" style="zoom:33%;width:33%" />
 
 **效果图（type=0）：**
 
 命令：`python imageMarker.py -t 0 --opa 0.2`
 
-<img src="https://raw.githubusercontent.com/leeyin98/figurebed/master/typoraImgs/test-16501152777732.jpg" alt="test" style="zoom:33%;max-width:33%" />
+<img src="https://raw.githubusercontent.com/leeyin98/figurebed/master/typoraImgs/test-16501152777732.jpg" alt="test" style="zoom:33%;width:33%" />
 
 **效果图（type=1）：**
 
 命令：`python imageMarker.py -t 1 --opa 0.9 -l 3`
 
-<img src="https://raw.githubusercontent.com/leeyin98/figurebed/master/typoraImgs/test-16501153743883.jpg" alt="test" style="zoom:33%;max-width:33%" />
+<img src="https://raw.githubusercontent.com/leeyin98/figurebed/master/typoraImgs/test-16501153743883.jpg" alt="test" style="zoom:33%;width:33%" />
 
 **效果图（type=2）：**
 
 命令：`python imageMarker.py -t 2 --opa 0.7 -r 300,300,630,600`
 
-<img src="https://raw.githubusercontent.com/leeyin98/figurebed/master/typoraImgs/test-16501156182614.jpg" alt="test" style="zoom:33%;max-width:33%" />
+<img src="https://raw.githubusercontent.com/leeyin98/figurebed/master/typoraImgs/test-16501156182614.jpg" alt="test" style="zoom:33%;width:33%" />
