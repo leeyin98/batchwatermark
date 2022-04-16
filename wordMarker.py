@@ -19,8 +19,8 @@ def add_font_mark(image_path, mark, args):
 
         # 获取文件名
         new_name = os.path.join(args.out, name)
-        if os.path.splitext(new_name)[1] != '.png':
-            image = image.convert('RGB')
+        if os.path.splitext(new_name)[1] != ".png":
+            image = image.convert("RGB")
         # 保存添加水印后的图片
         image.save(new_name, quality=args.quality)
 
@@ -42,7 +42,7 @@ def generate_mark(args):
 
     # 裁剪图片边缘空白
     def crop_image_white(im):
-        bg = Image.new(mode='RGBA', size=im.size)
+        bg = Image.new(mode="RGBA", size=im.size)
         diff = ImageChops.difference(im, bg)
         del bg
         bbox = diff.getbbox()
@@ -51,7 +51,7 @@ def generate_mark(args):
         return im
 
     # 获取字体宽/度
-    is_height_crop_float = '.' in args.font_height_crop
+    is_height_crop_float = "." in args.font_height_crop
     width = len(args.mark) * args.size
     if is_height_crop_float:
         height = round(args.size * float(args.font_height_crop))
@@ -59,7 +59,7 @@ def generate_mark(args):
         height = int(args.font_height_crop)
 
     # 创建水印图片
-    mark = Image.new(mode='RGBA', size=(width, height))
+    mark = Image.new(mode="RGBA", size=(width, height))
 
     # 生成文字
     draw_table = ImageDraw.Draw(im=mark)
@@ -78,7 +78,7 @@ def generate_mark(args):
         c = int(math.sqrt(im.size[0] * im.size[0] + im.size[1] * im.size[1]))
 
         # 以斜边长度为宽高创建大图（旋转后大图才足以覆盖原图）
-        mark2 = Image.new(mode='RGBA', size=(c, c))
+        mark2 = Image.new(mode="RGBA", size=(c, c))
 
         # 在大图上生成水印文字，此处mark为上面生成的水印图片
         y, idx = 0, 0
@@ -97,8 +97,8 @@ def generate_mark(args):
         mark2 = mark2.rotate(args.angle)
 
         # 在原图上添加大图水印
-        if im.mode != 'RGBA':
-            im = im.convert('RGBA')
+        if im.mode != "RGBA":
+            im = im.convert("RGBA")
         im.paste(mark2,  # 大图
                  (int((im.size[0] - c) / 2), int((im.size[1] - c) / 2)),  # 坐标
                  mask=mark2.split()[3])
@@ -150,5 +150,5 @@ def main():
         add_font_mark(args.file, mark, args)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

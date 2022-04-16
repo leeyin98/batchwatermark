@@ -5,12 +5,12 @@ from PIL import Image
 
 
 # 图片水印
-def add_image_mark(image_path, args):
+def add_image_mark(image_path, mark_path, args):
     # 打开并转换图片和水印
     image_file = Image.open(image_path)
-    mark_file = Image.open(args.mark)
-    rgba_image = image_file.convert('RGBA')
-    rgba_watermark = mark_file.convert('RGBA')
+    mark_file = Image.open(mark_path)
+    rgba_image = image_file.convert("RGBA")
+    rgba_watermark = mark_file.convert("RGBA")
 
     # 读取图片和水印的高度和宽度
     image_x, image_y = rgba_image.size
@@ -49,7 +49,7 @@ def add_image_mark(image_path, args):
     else:
         rgba_image.paste(rgba_watermark, (0, 0), rgba_watermark_mask)  # 全屏
 
-    image = rgba_image.convert('RGB')
+    image = rgba_image.convert("RGB")
     # 若类型为全图水印擦除部分
     if args.type == 2:
         index_array = args.range.split(",")
@@ -69,16 +69,19 @@ def add_image_mark(image_path, args):
         image_crop = image_file.crop((int(left), int(up), int(right), int(down)))
         image_crop.save(temp_crop_name, quality=args.quality)
         crop_file = Image.open(temp_crop_name)
-        crop_images = crop_file.convert('RGBA')
+        crop_images = crop_file.convert("RGBA")
 
         # 将打好水印的图存为临时文件并与需擦除部分进行合并
         image.save(temp_image_name, quality=args.quality)
         temp_file = Image.open(temp_image_name)
-        temp_images = temp_file.convert('RGBA')
+        temp_images = temp_file.convert("RGBA")
         temp_images.paste(crop_images, (int(left), int(up), int(right), int(down)))
         image = temp_images
 
-    file_name = os.path.basename(image_path)
+    mark_name = os.path.basename(mark_path)
+    pre_name = mark_name.split(".")[0]
+    print(mark_path)
+    file_name = pre_name + "-" + os.path.basename(image_path)
     if file_name:
         # 若输出路径不存在则新建
         if not os.path.exists(args.out):
@@ -86,8 +89,8 @@ def add_image_mark(image_path, args):
 
         # 获取文件名
         new_name = os.path.join(args.out, file_name)
-        if os.path.splitext(new_name)[1] != '.png':
-            image = image.convert('RGB')
+        if os.path.splitext(new_name)[1] != ".png":
+            image = image.convert("RGB")
         # 保存添加水印后的图片
         image.save(new_name, quality=args.quality)
 
@@ -99,8 +102,8 @@ def main():
     parse = argparse.ArgumentParser(formatter_class=argparse.RawTextHelpFormatter)
     parse.add_argument("-f", "--file", type=str, default="./images",
                        help="请输入一个目录或图像文件路径，默认为./images")
-    parse.add_argument("-m", "--mark", type=str, default="./watermark/mark.png",
-                       help="请输入一个目录或图片水印路径，默认为./watermark/mark.png")
+    parse.add_argument("-m", "--mark", type=str, default="./watermark",
+                       help="请输入一个目录或图片水印路径，默认为./watermark")
     parse.add_argument("-o", "--out", type=str, default="./output",
                        help="请输入一个目录或图像文件路径，默认为./output")
     parse.add_argument("-t", "--type", default=0, type=int,
@@ -116,15 +119,29 @@ def main():
 
     args = parse.parse_args()
 
-    # 若文件源路径为目录，则遍历目录下所有图片添加水印
-    if os.path.isdir(args.file):
-        names = os.listdir(args.file)
-        for name in names:
-            image_file = os.path.join(args.file, name)
-            add_image_mark(image_file, args)
+    # 若水印路径为目录，则遍历目录下所有水印进行添加
+    if os.path.isdir(args.mark):
+        mark_names = os.listdir(args.mark)
+        for mark in mark_names:
+            mark_file = os.path.join(args.mark, mark)
+            # 若文件源路径为目录，则遍历目录下所有图片添加水印
+            if os.path.isdir(args.file):
+                image_names = os.listdir(args.file)
+                for image in image_names:
+                    image_file = os.path.join(args.file, image)
+                    add_image_mark(image_file, mark_file, args)
+            else:
+                add_image_mark(args.file, mark_file, args)
     else:
-        add_image_mark(args.file, args)
+        # 若文件源路径为目录，则遍历目录下所有图片添加水印
+        if os.path.isdir(args.file):
+            names = os.listdir(args.file)
+            for name in names:
+                image_file = os.path.join(args.file, name)
+                add_image_mark(image_file, args.mark, args)
+        else:
+            add_image_mark(args.file, args.mark, args)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
