@@ -42,7 +42,7 @@ usage: wordMarker.py [-h]
 ```
 usage: imageMarker.py [-h]
 					[-f FILE] --请输入一个目录或图像文件路径，默认为./images
-					[-m MARK] --请输入一个目录或图片水印路径，默认为./watermark/mark.png
+					[-m MARK] --请输入一个目录或图片水印路径，默认为./watermark
 					[-o OUT] --请输入一个目录或图像文件路径，默认为./output
 					[-t TYPE] --请输入水印类型（0：全图水印，1：局部水印，2：全图水印擦除部门），默认为0
 					[-r RANGE] --若type为2，则请输入需擦除的矩形范围（左，上，右，下）, 默认为：0,0,100,100
