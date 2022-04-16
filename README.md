@@ -1,6 +1,8 @@
 ## 批量添加水印
 **声明**：灵感来源于https://github.com/2Dou/watermarker
 
+**说明**：`wordMarker.py用于添加文字水印，imageMarker.py用于添加图片水印`
+
 
 ### 文字水印
 
