@@ -7,6 +7,8 @@ from PIL import Image
 
 # 图片水印
 def add_image_mark(image_path, mark_path, args):
+    temp_path = "./temp/"  # 临时文件夹路径
+
     # 打开并转换图片和水印
     image_file = Image.open(image_path)
     mark_file = Image.open(mark_path)
@@ -17,6 +19,8 @@ def add_image_mark(image_path, mark_path, args):
     image_x, image_y = rgba_image.size
     watermark_x, watermark_y = rgba_watermark.size
     new_size = (int(image_x), int(image_y))
+    zoom_multiple_x = watermark_x / image_x
+    zoom_multiple_y = watermark_y / image_y
 
     # 若类型为局部水印，则缩放水印图并添加水印
     if args.type == 1:
@@ -24,7 +28,17 @@ def add_image_mark(image_path, mark_path, args):
         watermark_scale = max(image_x / (scale * watermark_x), image_y / (scale * watermark_y))
         new_size = (int(watermark_x * watermark_scale), int(watermark_y * watermark_scale))
 
-    rgba_watermark = rgba_watermark.resize(new_size, resample=Image.ANTIALIAS)
+    # 若类型为全图水印，且cover为1，则进行图片大小调整
+    if (args.type == 0 or args.type == 2) and args.cover == 1:
+        print(1)
+        new_size = (int(watermark_x), int(watermark_y))
+        rgba_image = rgba_image.resize(new_size, resample=Image.ANTIALIAS)
+
+        temp_zoom_image_name = temp_path + "zoomImage.png"  # 调整大小后的无水印图路径
+        rgba_image.save(temp_zoom_image_name, quality=args.quality)
+        image_file = Image.open(temp_zoom_image_name)
+    else:
+        rgba_watermark = rgba_watermark.resize(new_size, resample=Image.ANTIALIAS)
 
     # 设置不透明度
     opacity = args.opacity * 280
@@ -57,17 +71,23 @@ def add_image_mark(image_path, mark_path, args):
     # 若类型为全图水印擦除部分
     if args.type == 2:
         index_array = args.range.split(",")
-        left = index_array[0]
-        up = index_array[1]
-        right = index_array[2]
-        down = index_array[3]
-        temp_path = "./temp/"  # 临时文件夹
+        left = int(index_array[0])
+        up = int(index_array[1])
+        right = int(index_array[2])
+        down = int(index_array[3])
         temp_crop_name = temp_path + "crop.png"  # 需擦除部分临时图片
         temp_image_name = temp_path + "image.png"  # 全水印临时图片
 
         # 若临时文件夹不存在则新建
         if not os.path.exists(temp_path):
             os.mkdir(temp_path)
+
+        # 若cover为1，则修改需擦除的坐标
+        if args.cover == 1:
+            left = left * zoom_multiple_x
+            up = up * zoom_multiple_y
+            right = right * zoom_multiple_x
+            down = down * zoom_multiple_y
 
         # 剪切保存需擦除的部分并打开
         image_crop = image_file.crop((int(left), int(up), int(right), int(down)))
@@ -111,6 +131,8 @@ def main():
                        help="请输入一个目录或图像文件路径，默认为./output")
     parse.add_argument("-t", "--type", default=0, type=int,
                        help="请输入水印类型（0：全图水印，1：局部水印，2：全图水印擦除部门），默认为0")
+    parse.add_argument("-c", "--cover", default=0, type=int,
+                       help="当类型为0或2时，若水印失真，则将图片大小调整为水印大小，默认为0，不作调整")
     parse.add_argument("-r", "--range", default="0,0,100,100", type=str,
                        help="若type为2，则请输入需擦除的矩形范围（左，上，右，下）, 默认为：0,0,100,100")
     parse.add_argument("-l", "--location", default="0", type=str,
