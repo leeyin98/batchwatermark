@@ -119,12 +119,13 @@ def add_image_mark(image_path, mark_path, args):
         ignore_mask_color = (255,) * channels_count
         cv2.fillPoly(mask, roi_corners, ignore_mask_color)
         masked_image = cv2.bitwise_and(img, mask)
-        # 保存图片文件
+        # 保存裁剪好的黑背景图片文件
         cv2.imwrite(temp_crop_irregular_name, masked_image)
         cv2.waitKey()
 
         black_image = Image.open(temp_crop_irregular_name)
         black_image_rgba = black_image.convert("RGBA")
+        # 将黑色背景修改成透明背景并保存
         data_array = black_image_rgba.getdata()
         new_data = list()
         for item in data_array:
@@ -137,6 +138,7 @@ def add_image_mark(image_path, mark_path, args):
         temp_crop_irregular_transparent_img = Image.open(temp_crop_irregular_transparent_name)
         black_irregular_transparent_rgba = temp_crop_irregular_transparent_img.convert("RGBA")
 
+        # 将打好水印的图存为临时文件并与需擦除部分进行合并
         image.save(temp_image_name, quality=args.quality)
         temp_file = Image.open(temp_image_name)
         temp_images = temp_file.convert("RGBA")
